@@ -1,5 +1,41 @@
 const mongoose = require('mongoose');
 
+// All DSA Topics as ENUM values (copied inline)
+const dsaTopics = [
+  'Arrays',
+  'Strings',
+  'LinkedList',
+  'Stack',
+  'Queue',
+  'Hashing',
+  'TwoPointers',
+  'SlidingWindow',
+  'BinarySearch',
+  'Recursion',
+  'Backtracking',
+  'BitManipulation',
+  'Greedy',
+  'Sorting',
+  'Heap',
+  'Trie',
+  'Graphs',
+  'Trees',
+  'BinaryTree',
+  'BST',
+  'SegmentTree',
+  'DP',
+  'DivideAndConquer',
+  'Math',
+  'Geometry',
+  'NumberTheory',
+  'Design',
+  'LLD',
+  'SystemDesign',
+  'OOP',
+  'Algorithms',
+  'Behavioral'
+];
+
 const questionSchema = new mongoose.Schema({
   text: {
     type: String,
@@ -8,7 +44,7 @@ const questionSchema = new mongoose.Schema({
   topic: {
     type: String,
     required: true,
-    enum: ['Arrays', 'DP', 'Graphs', 'LLD', 'System Design', 'Algorithms', 'Behavioral']
+    enum: dsaTopics
   },
   roundType: {
     type: String,
@@ -55,7 +91,7 @@ const interviewSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  questions: [questionSchema] // Array of structured questions
+  questions: [questionSchema]
 });
 
 module.exports = mongoose.model('Interview', interviewSchema);

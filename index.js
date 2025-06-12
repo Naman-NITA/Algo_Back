@@ -1,13 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require('cors'); // Add CORS package
 const Interview = require('./models/Interview');
-require('dotenv').config();
 
 const app = express();
+require('dotenv').config();
+
+
+
+
+// My name is naman
+
 const mongoDB = process.env.URL_API;
 
-// ✅ Fixed CORS config — removed trailing slash
+
+
+
+// Enable CORS for all routes
 app.use(cors({
   origin: 'https://algo-project-duhl.vercel.app',
   methods: ['GET', 'POST'],
@@ -16,12 +25,13 @@ app.use(cors({
 
 app.use(express.json());
 
-// POST route to save interview data
+
 app.post('/api/interview', async (req, res) => {
   try {
     const { company, role, position, experience, year, questions } = req.body;
 
-    if (!questions || !questions.every(q =>
+    // Validate required question fields
+    if (!questions || !questions.every(q => 
       q.text && q.topic && q.roundType && q.difficulty
     )) {
       return res.status(400).json({
@@ -46,30 +56,32 @@ app.post('/api/interview', async (req, res) => {
     });
 
     await newEntry.save();
-    res.status(201).json({
-      message: "Interview data saved successfully",
-      data: newEntry
+    res.status(201).json({ 
+      message: "Interview data saved successfully", 
+      data: newEntry 
     });
 
   } catch (err) {
-    res.status(500).json({
-      error: "Failed to save data",
-      details: err.message
+    res.status(500).json({ 
+      error: "Failed to save data", 
+      details: err.message 
     });
   }
 });
 
-// GET route to search interview questions
+
 app.get('/api/interview/search', async (req, res) => {
   try {
     const { company, role, position, year, topic, difficulty } = req.query;
 
+    // Validate required parameters
     if (!company || !role || !position || !year) {
       return res.status(400).json({
         error: "All parameters (company, role, position, year) are required."
       });
     }
 
+    // Build base query for interviews
     const interviewQuery = {
       company: new RegExp(`^${company.trim()}$`, 'i'),
       role: new RegExp(`^${role.trim()}$`, 'i'),
@@ -77,12 +89,14 @@ app.get('/api/interview/search', async (req, res) => {
       year: new RegExp(`^${year.trim()}$`, 'i')
     };
 
+    // Fetch interviews matching the base query
     const interviews = await Interview.find(interviewQuery);
 
     if (interviews.length === 0) {
       return res.status(404).json({ message: "No matching data found." });
     }
 
+    // Aggregate and filter questions
     let allQuestions = [];
     for (const interview of interviews) {
       let filteredQuestions = interview.questions;
@@ -102,7 +116,7 @@ app.get('/api/interview/search', async (req, res) => {
     res.status(200).json({
       totalResults: interviews.length,
       totalQuestions: allQuestions.length,
-      questions: allQuestions
+      questions: allQuestions // Each question contains all metadata
     });
 
   } catch (error) {
@@ -110,7 +124,12 @@ app.get('/api/interview/search', async (req, res) => {
   }
 });
 
-// Start the server after DB connects
+
+
+
+
+
+
 async function startServer() {
   try {
     await mongoose.connect(mongoDB);
