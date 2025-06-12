@@ -18,7 +18,7 @@ const mongoDB = process.env.URL_API;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: 'https://algo-project-duhl.vercel.app',
+  origin: 'https://algo-project-sandy.vercel.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
